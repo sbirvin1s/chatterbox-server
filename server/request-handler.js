@@ -11,8 +11,15 @@ this file and include it in basic-server.js so that it actually works.
 *Hint* Check out the node module documentation at http://nodejs.org/api/modules.html.
 
 **************************************************************/
+/*
+---------------------------- PROJECT NOTES ---------------------------
+1. the requestHandler constructor is written in functional instantiation style - BE CONSISTENT!!!!
+2. Need additional functions to check for port name, parts of request
+3.
+*/
 
-var requestHandler = function(request, response) {
+var requestHandler = function (request, response) {
+  // debugger;
   // Request and Response come from node's http module.
   //
   // They include information about both the incoming request, such as
@@ -29,10 +36,21 @@ var requestHandler = function(request, response) {
   // console.logs in your code.
   console.log('Serving request type ' + request.method + ' for url ' + request.url);
 
+  // complete url: 'http://127.0.0.1:3000/classes/messages'
+
   // The outgoing status.
   var statusCode = 200;
 
+
   // See the note below about CORS headers.
+
+  var defaultCorsHeaders = {
+    'access-control-allow-origin': '*',
+    'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'access-control-allow-headers': 'content-type, accept, authorization',
+    'access-control-max-age': 10 // Seconds.
+  };
+
   var headers = defaultCorsHeaders;
 
   // Tell the client we are sending them plain text.
@@ -45,6 +63,26 @@ var requestHandler = function(request, response) {
   // which includes the status and all headers.
   response.writeHead(statusCode, headers);
 
+  //GET request response
+  //data, url, and type are the most important pieces
+  //POST requeset response
+  if (!request.url === 'http://127.0.0.1:3000/classes/messages') {
+    if (request.method === 'GET') {
+      response.writeHead(404,);
+      //console log in here to see if the server is receiving this kind of thing
+      // console.log('This Works');
+      response.end('Hello, World!');
+      // console.log('This Works');
+    }
+    if (request.method === 'POST') {
+      // console.log('This Works');
+      response.end('Created');
+
+    }
+  } else if (request.url === 'http://127.0.0.1:3000/classes/messages') { // <---------------- THIS is the request URL!!!!)
+    // console.log('This Works');
+    response.end('Testing!');
+  }
   // Make sure to always call response.end() - Node may not send
   // anything back to the client until you do. The string you pass to
   // response.end() will be the body of the response - i.e. what shows
@@ -64,9 +102,7 @@ var requestHandler = function(request, response) {
 //
 // Another way to get around this restriction is to serve you chat
 // client from this domain by setting up static file serving.
-var defaultCorsHeaders = {
-  'access-control-allow-origin': '*',
-  'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'access-control-allow-headers': 'content-type, accept, authorization',
-  'access-control-max-age': 10 // Seconds.
+
+module.exports = {
+  requestHandler
 };
